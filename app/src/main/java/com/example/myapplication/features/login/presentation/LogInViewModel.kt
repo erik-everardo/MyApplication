@@ -1,34 +1,44 @@
 package com.example.myapplication.features.login.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.features.login.domain.model.UserCredential
+import com.example.myapplication.core.util.DataRetrieveResult
+import com.example.myapplication.features.login.domain.repository.LogInRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ValidationData(private val credential: UserCredential){
-    // Improve this
-    fun emailIsValid() = credential.email.isNotBlank()
-    fun passwordIsValid() = credential.password.isNotBlank()
-}
+@HiltViewModel
+class LogInViewModel @Inject constructor(val signInRepository: LogInRepository) : ViewModel() {
 
-class LogInViewModel() : ViewModel() {
-
-    private val _userCredential: UserCredential = UserCredential("","")
-
-    private val _validation: MutableStateFlow<ValidationData> = MutableStateFlow(ValidationData(_userCredential))
-    val validation: StateFlow<ValidationData> = _validation
+    private val _signInState = MutableStateFlow(SignInState(false, null))
+    val signInState: StateFlow<SignInState> = _signInState.asStateFlow()
 
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                @Suppress("UNCHECKED_CAST")
-                return LogInViewModel() as T
+    fun signIn(email: String, password: String){
+        viewModelScope.launch {
+            signInRepository.authenticateUserWithCredential(email, password).collectLatest {
+                // Aqui se recibe el auth, aunque ya se guardó
+                _signInState.emit(when(it){
+                    is DataRetrieveResult.Success -> SignInState(
+                        validationError = false,
+                        success = true
+                    )
+                    is DataRetrieveResult.Error -> SignInState(
+                        validationError = false,
+                        success = false
+                    )
+                    is DataRetrieveResult.Loading -> SignInState(
+                        validationError = false,
+                        success = null
+                    )
+                })
             }
-
         }
     }
+
 }
