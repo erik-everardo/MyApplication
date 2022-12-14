@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.example.myapplication.features.login.data.local.entity.AuthDataEntity
 
-
 @Dao
 interface LogInDao {
     @Insert(onConflict = REPLACE)

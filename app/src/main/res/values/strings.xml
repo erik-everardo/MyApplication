@@ -3,4 +3,11 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="sign_in">Sign in</string>
+    <string name="no_internet">No Internet connection</string>
+    <string name="exit">Exit</string>
+    <string name="retry">Retry to connect</string>
+    <string name="continue_with_no_connection">Continue with no connection</string>
+    <string name="refresh">Refresh</string>
+    <string name="like">Like</string>
+    <string name="ascending">Ascending</string>
 </resources>

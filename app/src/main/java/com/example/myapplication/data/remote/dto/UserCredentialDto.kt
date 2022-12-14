@@ -1,4 +1,4 @@
-package com.example.myapplication.features.login.data.remote.dto
+package com.example.myapplication.data.remote.dto
 
 data class UserCredentialDto(
     val email: String,
