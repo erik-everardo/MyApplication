@@ -1,12 +1,15 @@
 package com.example.myapplication.features.profile.presentation
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.core.activity_extras.Post
 import com.example.myapplication.data.remote.dto.PostDataDto
 import com.example.myapplication.databinding.PostBinding
+import com.example.myapplication.features.post.presentation.PostActivity
 import io.noties.markwon.Markwon
 
 class PostListAdapter() : ListAdapter<PostDataDto, PostListAdapter.ViewHolder>(DiffCallback) {
@@ -16,6 +19,14 @@ class PostListAdapter() : ListAdapter<PostDataDto, PostListAdapter.ViewHolder>(D
 
             val markdown = Markwon.create(binding.content.context)
             markdown.setMarkdown(binding.content, post.post.textContent)
+
+            binding.card.setOnClickListener {
+                binding.root.context.let {
+                    it.startActivity(Intent(it, PostActivity::class.java).apply {
+                        putExtra(Post.POST_ID, post.post.id)
+                    })
+                }
+            }
         }
     }
 
